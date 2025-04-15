@@ -1,136 +1,295 @@
 /* Authentication styles */
 
-.auth-page {
+/* Layout */
+.auth-layout {
   display: flex;
-  justify-content: center;
-  align-items: center;
   min-height: 100vh;
-  background-color: #f5f5f5;
-  padding: 20px;
+  background-color: #f5f8ff;
+  position: relative;
 }
 
-.auth-form-container {
+.auth-background {
+  display: none;
+  background-color: #1a1e3c;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.auth-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(100, 108, 255, 0.9) 0%, rgba(158, 102, 255, 0.8) 100%);
+  opacity: 0.85;
+}
+
+.auth-illustration {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('../assets/images/auth-pattern.svg');
+  background-size: cover;
+  opacity: 0.1;
+}
+
+.auth-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.auth-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.auth-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.auth-logo img {
+  height: 40px;
+  margin-right: 10px;
+}
+
+.auth-logo span {
+  font-size: 1.8rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, #646cff, #9e66ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.auth-container {
   width: 100%;
-  max-width: 400px;
-  padding: 30px;
+  max-width: 450px;
+}
+
+.auth-footer {
+  margin-top: 2rem;
+  text-align: center;
+  color: #666;
+  font-size: 0.8rem;
+}
+
+/* Form Styling - FIXED POSITIONING AND Z-INDEX */
+.auth-form-container {
+  padding: 2.5rem;
   background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.auth-form-container:hover {
+  box-shadow: 0 15px 35px rgba(100, 108, 255, 0.1);
 }
 
 .auth-title {
   font-size: 1.8rem;
   font-weight: 700;
-  margin-bottom: 10px;
-  color: #333;
+  margin-bottom: 0.5rem;
+  color: #1a1e3c;
   text-align: center;
 }
 
 .auth-subtitle {
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: #666;
-  margin-bottom: 20px;
+  margin-bottom: 2rem;
   text-align: center;
 }
 
+/* Form Group - Reduced spacing */
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 1rem; /* Reduced from 1.5rem */
+  position: relative;
 }
 
+/* Label positioning fixed - align left */
 .form-group label {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 0.5rem;
   font-weight: 500;
-  font-size: 0.9rem;
-  color: #333;
+  font-size: 0.95rem;
+  color: #1a1e3c;
+  position: relative;
+  z-index: 1;
+  text-align: left; /* Ensure labels are left-aligned */
 }
 
+/* Fixed input styling and z-index */
 .form-input {
   width: 100%;
-  padding: 10px 12px;
+  height: 50px; /* Fixed height to prevent resizing */
+  padding: 0.8rem 1rem;
+  padding-left: 2.8rem; /* Space for icon */
   font-size: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  transition: border-color 0.3s;
+  border: 1px solid #e1e5f2;
+  border-radius: 8px;
+  background-color: #f8faff;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
+  box-sizing: border-box; /* Ensure padding is included in width */
 }
 
+/* Improved focus state */
 .form-input:focus {
   outline: none;
   border-color: #646cff;
+  box-shadow: 0 0 0 3px rgba(100, 108, 255, 0.15);
+  background-color: white;
+  z-index: 3; /* Ensure focused input is above icons */
 }
 
 .form-input.error {
   border-color: #ff4d4f;
+  box-shadow: 0 0 0 3px rgba(255, 77, 79, 0.1);
 }
 
 .error-message {
   color: #ff4d4f;
-  font-size: 0.8rem;
-  margin-top: 5px;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
   display: block;
-  padding: 10px;
-  background-color: rgba(255, 77, 79, 0.05);
-  border-radius: 4px;
-  margin-bottom: 15px;
 }
 
+/* Fixed icon positioning */
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 1rem;
+  color: #a0a8c0;
+  z-index: 4; /* Keep icon visible */
+  pointer-events: none; /* Allow clicking through icon */
+}
+
+/* Password toggle icon - remove hover effects */
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #a0a8c0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  width: 24px;
+  height: 24px;
+  transition: none; /* Remove transition effect */
+}
+
+.password-toggle:hover {
+  color: #a0a8c0; /* Same as normal state - no hover color change */
+}
+
+/* Improved success message */
 .success-message {
   text-align: center;
-  padding: 20px;
-  background-color: rgba(82, 196, 26, 0.05);
+  padding: 1.5rem;
+  background-color: rgba(82, 196, 26, 0.08);
   border-radius: 8px;
-  margin-bottom: 15px;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(82, 196, 26, 0.2);
 }
 
 .success-message h3 {
   color: #52c41a;
-  margin-bottom: 10px;
+  margin-bottom: 0.8rem;
   font-size: 1.3rem;
 }
 
 .success-message p {
-  color: #666;
-  margin-bottom: 20px;
+  color: #333;
+  margin-bottom: 1.2rem;
 }
 
+/* Better button styling */
 .form-button {
   width: 100%;
-  background-color: #646cff;
+  height: 50px;
+  background: linear-gradient(90deg, #646cff, #9e66ff);
   color: white;
-  font-weight: 500;
-  padding: 12px;
+  font-weight: 600;
+  padding: 0;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s;
-  margin-top: 10px;
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem;
+  position: relative;
+  overflow: hidden;
 }
 
 .form-button:hover {
-  background-color: #535bf2;
+  background: linear-gradient(90deg, #535bf2, #8d5cf7);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(100, 108, 255, 0.25);
+}
+
+.form-button:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 6px rgba(100, 108, 255, 0.2);
 }
 
 .form-button:disabled {
-  background-color: #a2a4de;
+  background: linear-gradient(90deg, #c2c4ff, #d7c8ff);
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .form-link {
   text-align: center;
-  margin-top: 16px;
-  font-size: 0.9rem;
+  margin-top: 1.5rem;
+  font-size: 0.95rem;
   color: #666;
 }
 
 .form-link a {
   color: #646cff;
   font-weight: 500;
+  text-decoration: none;
+}
+
+.form-link a:hover {
+  text-decoration: underline;
 }
 
 .form-divider {
   display: flex;
   align-items: center;
-  margin: 20px 0;
+  margin: 1.5rem 0;
   color: #888;
   font-size: 0.9rem;
 }
@@ -139,25 +298,463 @@
 .form-divider::after {
   content: "";
   flex: 1;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #e1e5f2;
 }
 
 .form-divider span {
-  padding: 0 10px;
+  padding: 0 1rem;
+}
+
+/* Fixed form extras - checkbox and forgot password */
+.form-extras {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
 }
 
 .forgot-password {
   text-align: right;
-  margin-top: -10px;
-  margin-bottom: 15px;
 }
 
 .forgot-password a {
   color: #646cff;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   text-decoration: none;
 }
 
 .forgot-password a:hover {
   text-decoration: underline;
+}
+
+/* Better social login buttons */
+.social-login {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.social-button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 45px;
+  background-color: white;
+  border: 1px solid #e1e5f2;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.social-button:hover {
+  background-color: #f5f8ff;
+  border-color: #c2c4ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.social-button:active {
+  transform: translateY(0);
+}
+
+.social-button svg {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+/* Fixed checkbox styling */
+.form-checkbox {
+  display: flex;
+  align-items: center;
+  text-align: left;
+}
+
+.form-checkbox input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 1px solid #e1e5f2;
+  border-radius: 4px;
+  margin-right: 0.5rem;
+  position: relative;
+  cursor: pointer;
+  background-color: #f8faff;
+  transition: all 0.2s ease;
+}
+
+.form-checkbox input:checked {
+  background-color: #646cff;
+  border-color: #646cff;
+}
+
+.form-checkbox input:checked::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 6px;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.form-checkbox label {
+  font-size: 0.95rem;
+  color: #333;
+  cursor: pointer;
+  user-select: none;
+  text-align: left;
+}
+
+/* Enhanced subject checkboxes styling */
+.subject-checkboxes {
+  background-color: #f8faff;
+  border-radius: 8px;
+  padding: 15px;
+  border: 1px solid #e1e5f2;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.subject-checkbox {
+  position: relative;
+  padding: 8px 10px;
+  background-color: white;
+  border-radius: 6px;
+  border: 1px solid #e1e5f2;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+}
+
+.subject-checkbox:hover {
+  border-color: #c2c4ff;
+  box-shadow: 0 2px 6px rgba(100, 108, 255, 0.1);
+}
+
+.subject-checkbox input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+.subject-checkbox input[type="checkbox"]:checked + label {
+  font-weight: 500;
+  color: #646cff;
+}
+
+/* Unified agreement checkbox styling */
+.agreement-checkbox {
+  margin-bottom: 20px;
+  padding: 12px;
+  background-color: #f8faff;
+  border-radius: 8px;
+  border: 1px solid #e1e5f2;
+}
+
+.agreement-checkbox label {
+  color: #333;
+  line-height: 1.4;
+}
+
+.agreement-checkbox a {
+  color: #646cff;
+  text-decoration: none;
+}
+
+.agreement-checkbox a:hover {
+  text-decoration: underline;
+}
+
+/* Loading spinner animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-spinner {
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.auth-form-container {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Multi-step form styling */
+.form-steps {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.form-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 70px;
+}
+
+.step-number {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: #888;
+  margin-bottom: 5px;
+  position: relative;
+  z-index: 1;
+}
+
+.step-number.active {
+  background: linear-gradient(90deg, #646cff, #9e66ff);
+  color: white;
+}
+
+.step-number.completed {
+  background: #52c41a;
+  color: white;
+}
+
+.step-label {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.step-label.active {
+  color: #646cff;
+  font-weight: 500;
+}
+
+.step-connector {
+  flex: 1;
+  height: 2px;
+  background-color: #f0f0f0;
+  margin: 15px 5px 0;
+}
+
+.step-connector.filled {
+  background: linear-gradient(90deg, #646cff, #9e66ff);
+}
+
+/* Form slide transition */
+@keyframes slideIn {
+  0% { 
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  100% { 
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOut {
+  0% { 
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% { 
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+}
+
+.form-slide-enter {
+  animation: slideIn 0.3s forwards;
+}
+
+.form-slide-exit {
+  animation: slideOut 0.3s forwards;
+  position: absolute;
+  width: 100%;
+}
+
+/* Form navigation */
+.form-nav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+  gap: 1rem;
+}
+
+.form-nav button {
+  flex: 1;
+}
+
+/* Subject checkboxes styling */
+.subject-checkboxes {
+  background-color: #f8faff;
+  border-radius: 8px;
+  padding: 15px;
+  border: 1px solid #e1e5f2;
+  text-align: left; /* Ensure checkboxes and their labels are left-aligned */
+}
+
+/* Multi-step form styling */
+.form-steps {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.form-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 70px;
+}
+
+.step-number {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: #888;
+  margin-bottom: 5px;
+  position: relative;
+  z-index: 1;
+}
+
+.step-number.active {
+  background: linear-gradient(90deg, #646cff, #9e66ff);
+  color: white;
+}
+
+.step-number.completed {
+  background: #52c41a;
+  color: white;
+}
+
+.step-label {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.step-label.active {
+  color: #646cff;
+  font-weight: 500;
+}
+
+.step-connector {
+  flex: 1;
+  height: 2px;
+  background-color: #f0f0f0;
+  margin: 15px 5px 0;
+}
+
+.step-connector.filled {
+  background: linear-gradient(90deg, #646cff, #9e66ff);
+}
+
+/* Form slide transition */
+@keyframes slideIn {
+  0% { 
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  100% { 
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOut {
+  0% { 
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% { 
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+}
+
+.form-slide-enter {
+  animation: slideIn 0.3s forwards;
+}
+
+.form-slide-exit {
+  animation: slideOut 0.3s forwards;
+  position: absolute;
+  width: 100%;
+}
+
+/* Form navigation */
+.form-nav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+}
+
+/* Responsive adjustments */
+@media (min-width: 992px) {
+  .auth-layout {
+    flex-direction: row;
+  }
+  
+  .auth-background {
+    display: block;
+    flex: 1;
+  }
+  
+  .auth-content {
+    flex: 1;
+  }
+}
+
+@media (max-width: 576px) {
+  .auth-form-container {
+    padding: 1.5rem;
+  }
+  
+  .auth-title {
+    font-size: 1.5rem;
+  }
+  
+  .auth-logo img {
+    height: 30px;
+  }
+  
+  .auth-logo span {
+    font-size: 1.5rem;
+  }
+
+  .form-extras {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .forgot-password {
+    text-align: left;
+    width: 100%;
+  }
 }
