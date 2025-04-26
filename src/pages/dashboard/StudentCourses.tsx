@@ -216,7 +216,7 @@ const StudentCourses: React.FC = () => {
                       <span className="progress-text">{course.progress}% complete</span>
                     </div>
                     <div className="course-footer">
-                      <button className="course-button">Continue</button>
+                      <Link to={`/dashboard/student/course/${course.id}`} className="course-button">Continue</Link>
                       <Link to={`/dashboard/student/course/${course.id}`} className="course-details-link">
                         View Details
                       </Link>
