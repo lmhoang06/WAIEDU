@@ -1,8 +1,8 @@
 import { 
   LoginCredentials, 
   RegisterCredentials, 
-  ForgotPasswordData, 
-  ResetPasswordData,
+  ForgotPasswordCredentials, 
+  ResetPasswordCredentials,
   AuthResponse 
 } from '../../types/auth';
 
@@ -70,7 +70,7 @@ export const authService = {
   },
 
   // Forgot password
-  forgotPassword: async (data: ForgotPasswordData): Promise<{ message: string }> => {
+  forgotPassword: async (data: ForgotPasswordCredentials): Promise<{ message: string }> => {
     try {
       return await fetchWithAuth('/auth/forgot-password', {
         method: 'POST',
@@ -82,7 +82,7 @@ export const authService = {
   },
 
   // Reset password
-  resetPassword: async (data: ResetPasswordData): Promise<{ message: string }> => {
+  resetPassword: async (data: ResetPasswordCredentials): Promise<{ message: string }> => {
     try {
       return await fetchWithAuth('/auth/reset-password', {
         method: 'POST',

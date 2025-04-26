@@ -1,0 +1,62 @@
+/* Image optimization styles */
+.optimized-image-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.optimized-image-wrapper.loading {
+  background-color: #f3f4f6;
+  border-radius: 4px;
+}
+
+.image-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, #f0f0f0 0%, #f8f8f8 50%, #f0f0f0 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+img.hidden {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+img.visible {
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Fix common layout shift issues */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Add blur-up effect */
+.blur-up {
+  filter: blur(5px);
+  transition: filter 0.4s ease-in-out;
+}
+
+.blur-up.loaded {
+  filter: blur(0);
+}
+
+/* Optimize image loading for all components */
+.partner-logo, .feature-icon-modern {
+  width: auto;
+  height: auto;
+}

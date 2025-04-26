@@ -9,20 +9,41 @@ const ForgotPassword: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate email
+    if (!email || !validateEmail(email)) {
+      setError('Vui lòng nhập email hợp lệ.');
+      return;
+    }
+    
     setError(null);
     setLoading(true);
     
     try {
-      await authService.forgotPassword({ email });
-      setSuccess(true);
+      const response = await authService.forgotPassword({
+        email
+      });
+      
+      if (response) {
+        // Show success message
+        setSuccess(true);
+      } else {
+        throw new Error('Yêu cầu đặt lại mật khẩu thất bại.');
+      }
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Failed to process your request');
+      console.error('Forgot password error:', error);
+      setError(error instanceof Error ? error.message : 'Đã có lỗi xảy ra. Vui lòng thử lại sau.');
     } finally {
       setLoading(false);
     }

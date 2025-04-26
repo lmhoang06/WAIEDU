@@ -42,27 +42,22 @@ const ResetPassword: React.FC = () => {
     }
   };
 
-  const validateForm = () => {
-    const newErrors: {[key: string]: string} = {};
-    
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
-    }
-    
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validateForm()) {
+    // Validate passwords
+    if (!formData.password) {
+      setError('Vui lòng nhập mật khẩu mới.');
+      return;
+    }
+    
+    if (formData.password.length < 8) {
+      setError('Mật khẩu phải có ít nhất 8 ký tự.');
+      return;
+    }
+    
+    if (formData.password !== formData.confirmPassword) {
+      setError('Mật khẩu xác nhận không khớp.');
       return;
     }
     
@@ -70,15 +65,29 @@ const ResetPassword: React.FC = () => {
     setLoading(true);
     
     try {
-      await authService.resetPassword({
+      // Get token from URL query parameter
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get('token');
+      
+      if (!token) {
+        throw new Error('Token không hợp lệ.');
+      }
+      
+      const response = await authService.resetPassword({
+        token,
         password: formData.password,
-        confirmPassword: formData.confirmPassword,
-        token
+        confirmPassword: formData.confirmPassword
       });
       
-      setSuccess(true);
+      if (response) {
+        // Show success message
+        setSuccess(true);
+      } else {
+        throw new Error('Đặt lại mật khẩu thất bại.');
+      }
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Failed to reset password');
+      console.error('Reset password error:', error);
+      setError(error instanceof Error ? error.message : 'Đã có lỗi xảy ra. Vui lòng thử lại sau.');
     } finally {
       setLoading(false);
     }

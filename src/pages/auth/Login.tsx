@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AuthLayout from '../../layouts/AuthLayout';
 import { authService } from '../../services/auth';
 import loginImage from '../../assets/images/login-illustration.svg';
 import '../../styles/auth.css';
 
 const Login: React.FC = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -37,26 +38,41 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate form inputs
+    if (!formData.email) {
+      setError('Email không được để trống');
+      return;
+    }
+    
+    if (!formData.password) {
+      setError('Mật khẩu không được để trống');
+      return;
+    }
+    
     setError(null);
     setLoading(true);
     
     try {
-      await authService.login({
+      const response = await authService.login({
         email: formData.email,
-        password: formData.password
+        password: formData.password,
+        remember: rememberMe
       });
       
-      // If remember me is checked, store user preference
-      if (rememberMe) {
-        localStorage.setItem('rememberUser', formData.email);
+      // Check if login was successful
+      if (response && response.success) {
+        console.log('Login successful', response);
+        
+        // Redirect to appropriate dashboard based on user role
+        const userRole = response.user?.role || 'student'; // Default to student if role is undefined
+        navigate(`/dashboard/${userRole}`);
       } else {
-        localStorage.removeItem('rememberUser');
+        throw new Error(response.message || 'Đăng nhập không thành công');
       }
-      
-      // Redirect to dashboard or home page after successful login
-      window.location.href = '/dashboard';
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Đăng nhập không thành công. Vui lòng kiểm tra lại email và mật khẩu.');
+      console.error('Login error:', error);
+      setError(error instanceof Error ? error.message : 'Đăng nhập không thành công. Vui lòng thử lại.');
     } finally {
       setLoading(false);
     }
@@ -169,6 +185,7 @@ const Login: React.FC = () => {
           </button>
         </form>
         
+        {/* Social login buttons temporarily hidden
         <div className="form-divider">
           <span>hoặc đăng nhập với</span>
         </div>
@@ -187,6 +204,7 @@ const Login: React.FC = () => {
             Facebook
           </button>
         </div>
+        */}
         
         <div className="form-link">
           Chưa có tài khoản? <Link to="/auth/register">Đăng ký ngay</Link>

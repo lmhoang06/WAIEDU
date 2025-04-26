@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AuthLayout from '../../layouts/AuthLayout';
 import { authService } from '../../services/auth';
 import registerImage from '../../assets/images/register-illustration.svg';
@@ -9,6 +9,8 @@ import '../../styles/auth.css';
 type Step = 'account' | 'personal' | 'preferences';
 
 const Register: React.FC = () => {
+  const navigate = useNavigate();
+  
   // Expanded form data to collect more comprehensive information
   const [formData, setFormData] = useState({
     // Account details
@@ -193,8 +195,8 @@ const Register: React.FC = () => {
     setLoading(true);
     
     try {
-      // Register the user with all form data - include confirmPassword
-      await authService.register({
+      // Register the user with all form data
+      const response = await authService.register({
         name: formData.name,
         email: formData.email,
         password: formData.password,
@@ -210,10 +212,19 @@ const Register: React.FC = () => {
         childGrade: formData.childGrade
       });
       
-      // Redirect to dashboard or verification page after successful registration
-      window.location.href = '/dashboard';
+      // Check if registration was successful
+      if (response && response.success) {
+        // Show success message if needed
+        console.log("Registration successful:", response.message);
+        
+        // Redirect to appropriate dashboard based on user role
+        navigate(`/dashboard/${formData.role}`);
+      } else {
+        throw new Error(response.message || 'Đăng ký không thành công.');
+      }
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Đăng ký không thành công. Vui lòng thử lại sau.');
+      console.error('Registration error:', error);
     } finally {
       setLoading(false);
     }
@@ -749,6 +760,7 @@ const Register: React.FC = () => {
         
         {currentStep === 'account' && (
           <>
+            {/* Social login buttons temporarily hidden
             <div className="form-divider">
               <span>hoặc đăng ký với</span>
             </div>
@@ -767,6 +779,7 @@ const Register: React.FC = () => {
                 Facebook
               </button>
             </div>
+            */}
             
             <div className="form-link">
               Đã có tài khoản? <Link to="/auth/login">Đăng nhập</Link>

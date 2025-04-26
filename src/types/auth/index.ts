@@ -1,6 +1,7 @@
 export interface LoginCredentials {
   email: string;
   password: string;
+  remember?: boolean; // Adding remember property to fix the error
 }
 
 export interface RegisterCredentials {
@@ -45,6 +46,8 @@ export interface VerifyEmailCredentials {
 }
 
 export interface AuthResponse {
+  success: boolean; // Adding success property
+  message: string;  // Adding message property
   user: User;
   token: string;
 }

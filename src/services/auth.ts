@@ -5,103 +5,157 @@ import {
   ForgotPasswordData,
   VerifyEmailCredentials,
   AuthResponse 
-} from '../types/auth/index'; // Specify exact path to auth/index.ts
+} from '../types/auth/index';
 
-// Mock API service - replace with actual API calls later
+// const API_URL = 'https://guides.viegrand.site/api';
+const API_URL = 'http://localhost:5000/main'; // Localhost for development
+
+// Actual API service using fetch
 class AuthService {
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
-    // Simulate API call
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        // Dummy validation for example
-        if (credentials.email && credentials.password) {
-          resolve({
-            user: {
-              id: '1',
-              name: 'Test User',
-              email: credentials.email,
-              role: 'student',
-              isVerified: true,
-              createdAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString()
-            },
-            token: 'dummy-jwt-token'
-          });
-        } else {
-          reject(new Error('Invalid credentials'));
-        }
-      }, 1000);
-    });
+    try {
+      const response = await fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(credentials),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed');
+      }
+
+      // Store token and user data
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
+    }
   }
 
   async register(credentials: RegisterCredentials): Promise<AuthResponse> {
-    // Simulate API call
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (credentials.email && credentials.password) {
-          // Use the credentials in the response
-          resolve({
-            user: {
-              id: '1',
-              name: credentials.name,
-              email: credentials.email,
-              role: credentials.role || 'student',
-              isVerified: false,
-              createdAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString()
-            },
-            token: 'dummy-jwt-token'
-          });
-        } else {
-          reject(new Error('Registration failed'));
-        }
-      }, 1000);
-    });
+    try {
+      const response = await fetch(`${API_URL}/auth/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(credentials),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Registration failed');
+      }
+
+      // Store token and user data
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Registration error:', error);
+      throw error;
+    }
   }
 
-  async resetPassword(credentials: ResetPasswordData): Promise<boolean> {
-    // Simulate API call and use the credentials
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (credentials.password === credentials.confirmPassword && credentials.token) {
-          resolve(true);
-        } else {
-          reject(new Error('Password reset failed'));
-        }
-      }, 1000);
-    });
+  async resetPassword(data: ResetPasswordData): Promise<boolean> {
+    try {
+      const response = await fetch(`${API_URL}/auth/reset-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        throw new Error(responseData.message || 'Password reset failed');
+      }
+
+      return responseData.success;
+    } catch (error) {
+      console.error('Password reset error:', error);
+      throw error;
+    }
   }
 
-  async forgotPassword(credentials: ForgotPasswordData): Promise<boolean> {
-    // Simulate API call and use the credentials
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (credentials.email) {
-          resolve(true);
-        } else {
-          reject(new Error('Email is required'));
-        }
-      }, 1000);
-    });
+  async forgotPassword(data: ForgotPasswordData): Promise<boolean> {
+    try {
+      const response = await fetch(`${API_URL}/auth/forgot-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        throw new Error(responseData.message || 'Password reset request failed');
+      }
+
+      return responseData.success;
+    } catch (error) {
+      console.error('Forgot password error:', error);
+      throw error;
+    }
   }
 
   async verifyEmail(credentials: VerifyEmailCredentials): Promise<boolean> {
-    // Simulate API call and use the credentials
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (credentials.token) {
-          resolve(true);
-        } else {
-          reject(new Error('Token is required'));
-        }
-      }, 1000);
-    });
+    try {
+      const response = await fetch(`${API_URL}/auth/verify-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(credentials),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Email verification failed');
+      }
+
+      return data.success;
+    } catch (error) {
+      console.error('Email verification error:', error);
+      throw error;
+    }
   }
 
   async logout(): Promise<void> {
-    // Logout logic here
+    // Just remove token and user from local storage
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+  }
+  
+  getToken(): string | null {
+    return localStorage.getItem('token');
+  }
+  
+  getUser() {
+    const userStr = localStorage.getItem('user');
+    return userStr ? JSON.parse(userStr) : null;
+  }
+  
+  isAuthenticated(): boolean {
+    return !!this.getToken();
   }
 }
 
