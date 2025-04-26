@@ -26,6 +26,8 @@ type Course = {
   revenue?: number;
 };
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const TeacherDashboard: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [stats, setStats] = useState([
@@ -38,7 +40,7 @@ const TeacherDashboard: React.FC = () => {
   useEffect(() => {
     const fetchCourseAnalytics = async (courseId: number, token: string): Promise<CourseAnalytics | null> => {
       try {
-        const response = await fetch(`http://localhost:5000/main/courses/${courseId}/analytics`, {
+        const response = await fetch(`${API_URL}/courses/${courseId}/analytics`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -65,7 +67,7 @@ const TeacherDashboard: React.FC = () => {
       }
 
       try {
-        const response = await fetch(`http://localhost:5000/main/courses?$teacher=${userId}`, {
+        const response = await fetch(`${API_URL}/courses?$teacher=${userId}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

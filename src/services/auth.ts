@@ -8,7 +8,8 @@ import {
 } from '../types/auth/index';
 
 // const API_URL = 'https://guides.viegrand.site/api';
-const API_URL = 'http://localhost:5000/main'; // Localhost for development
+// const API_URL = 'http://localhost:5000/main'; // Localhost for development
+const API_URL = import.meta.env.VITE_API_URL;
 
 // Actual API service using fetch
 class AuthService {

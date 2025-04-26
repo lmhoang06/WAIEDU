@@ -56,6 +56,8 @@ type Resource = {
   last_updated: string;
 };
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const CourseDetails: React.FC = () => {
   const { courseId } = useParams<{ courseId: string }>();
   const [activeTab, setActiveTab] = useState('content');
@@ -83,7 +85,7 @@ const CourseDetails: React.FC = () => {
         }
 
         // Fetch course details
-        const response = await fetch(`http://localhost:5000/main/courses/${courseId}?$details=true`, {
+        const response = await fetch(`${API_URL}/courses/${courseId}?$details=true`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

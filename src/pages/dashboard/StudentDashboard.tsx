@@ -12,7 +12,9 @@ type Course = {
   progress: number;
   image_url: string;
   badge: string;
-  };
+};
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 const StudentDashboard: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -27,7 +29,7 @@ const StudentDashboard: React.FC = () => {
     const fetchCourses = async () => {
       const token = authService.getToken();
 
-      const response = await fetch('http://localhost:5000/main/student/enrollments', {
+      const response = await fetch(`${API_URL}/student/enrollments`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -38,7 +40,7 @@ const StudentDashboard: React.FC = () => {
 
       const processedCourses: Course[] = await Promise.all(
         data.enrollments.map(async (enrollment: any) => {
-          const courseResponse = await fetch(`http://localhost:5000/main/courses/${enrollment.course_id}?$select=title,subject_id,teacher_user_id,image_url`, {
+          const courseResponse = await fetch(`${API_URL}/courses/${enrollment.course_id}?$select=title,subject_id,teacher_user_id,image_url`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
