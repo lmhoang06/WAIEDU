@@ -130,6 +130,7 @@ const StudentDashboard: React.FC = () => {
         </div>
       </div>
 
+      {/* Temporary Hide due to unable to finish API in time
       <div className="dashboard-card">
         <div className="dashboard-card-header">
           <h2 className="dashboard-card-title">Learning Progress</h2>
@@ -170,6 +171,7 @@ const StudentDashboard: React.FC = () => {
           </div>
         </div>
       </div>
+      */}
     </div>
   );
 };
