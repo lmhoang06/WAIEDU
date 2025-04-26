@@ -493,6 +493,115 @@
   background: #535bf2;
 }
 
+/* Student Courses Page Styles */
+.student-courses {
+  width: 100%;
+}
+
+.filters-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.search-container {
+  flex: 1;
+  min-width: 200px;
+  position: relative;
+  overflow: hidden; /* Prevent content from overflowing */
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: 1px solid #e1e5f2;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  text-overflow: ellipsis; /* Add ellipsis for overflowing text */
+  white-space: nowrap; /* Prevent text from wrapping */
+  overflow: hidden; /* Hide overflow */
+  box-sizing: border-box; /* Ensure padding is included in width calculation */
+}
+
+.search-input:focus {
+  border-color: #646cff;
+  box-shadow: 0 0 0 2px rgba(100, 108, 255, 0.2);
+  outline: none;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap; /* Allow filters to wrap on smaller screens */
+}
+
+.filter-select {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #e1e5f2;
+  background-color: white;
+  min-width: 150px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: rgba(0, 0, 0, 0.95);
+}
+
+.filter-select:focus {
+  border-color: #646cff;
+  outline: none;
+}
+
+.courses-container {
+  margin-top: 20px;
+}
+
+.course-description {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 8px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.loading-indicator, .error-message, .no-courses-message {
+  padding: 30px;
+  text-align: center;
+  background-color: white;
+  border-radius: 8px;
+  margin: 20px 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.error-message {
+  color: #ff4d4f;
+}
+
+.no-courses-message h3 {
+  color: #646cff;
+  margin-bottom: 10px;
+}
+
+.course-details-link {
+  color: #646cff;
+  text-decoration: none;
+  margin-left: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.course-details-link:hover {
+  text-decoration: underline;
+}
+
 /* Responsive */
 @media (max-width: 992px) {
   .dashboard-sidebar {
@@ -539,5 +648,44 @@
   
   .stats-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Enhanced mobile responsiveness for filters */
+@media (max-width: 768px) {
+  .filters-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .search-container {
+    width: 100%;
+  }
+  
+  .filter-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .filter-select {
+    flex: 1;
+    min-width: 120px;
+    font-size: 0.85rem;
+    padding: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .filter-actions {
+    flex-direction: column;
+  }
+  
+  .filter-select {
+    width: 100%;
+  }
+  
+  .search-input {
+    font-size: 0.9rem;
+    padding: 8px 12px;
   }
 }

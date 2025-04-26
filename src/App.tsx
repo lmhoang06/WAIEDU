@@ -6,6 +6,7 @@ import ForgotPassword from './pages/auth/ForgotPassword';
 import ResetPassword from './pages/auth/ResetPassword';
 import Dashboard from './pages/Dashboard';
 import StudentDashboard from './pages/dashboard/StudentDashboard';
+import StudentCourses from './pages/dashboard/StudentCourses';
 import TeacherDashboard from './pages/dashboard/TeacherDashboard';
 import ParentDashboard from './pages/dashboard/ParentDashboard';
 import './App.css';
@@ -26,6 +27,7 @@ function App() {
         {/* Dashboard Routes */}
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard/student" element={<StudentDashboard />} />
+        <Route path="/dashboard/student/courses" element={<StudentCourses />} />
         <Route path="/dashboard/teacher" element={<TeacherDashboard />} />
         <Route path="/dashboard/parent" element={<ParentDashboard />} />
         

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 // import courseImg1 from '../../assets/images/course1.svg';
 // import courseImg2 from '../../assets/images/course2.svg';
 import { authService } from '../../services/auth';
@@ -96,7 +97,7 @@ const StudentDashboard: React.FC = () => {
       <div className="dashboard-card">
         <div className="dashboard-card-header">
           <h2 className="dashboard-card-title">My Courses</h2>
-          <button className="course-button">View All</button>
+          <Link to="/dashboard/student/courses" className="course-button">View All</Link>
         </div>
         
         <div className="course-grid">
