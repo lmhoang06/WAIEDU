@@ -162,6 +162,7 @@ const TeacherDashboard: React.FC = () => {
         </div>
       </div>
 
+      {/* Temporary Hide due to lack of data}
       <div className="dashboard-card">
         <div className="dashboard-card-header">
           <h2 className="dashboard-card-title">Student Analytics</h2>
@@ -244,7 +245,7 @@ const TeacherDashboard: React.FC = () => {
             </tbody>
           </table>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
