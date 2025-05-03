@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import AuthLayout from '../../layouts/AuthLayout';
 import { authService } from '../../services/auth';
 import registerImage from '../../assets/images/register-illustration.svg';
+import { subjectOptions } from '../../types/subject';
 import '../../styles/auth.css';
 
 // Define step types
@@ -44,18 +45,6 @@ const Register: React.FC = () => {
   const [errors, setErrors] = useState<{[key: string]: string}>({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  
-  // Subject options
-  const subjectOptions = [
-    { id: 'physics', name: 'Vật Lý' },
-    { id: 'chemistry', name: 'Hóa Học' },
-    { id: 'biology', name: 'Sinh Học' },
-    { id: 'math', name: 'Toán Học' },
-    { id: 'literature', name: 'Văn Học' },
-    { id: 'english', name: 'Tiếng Anh' },
-    { id: 'history', name: 'Lịch Sử' },
-    { id: 'geography', name: 'Địa Lý' }
-  ];
 
   // Handle form field changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {

@@ -1,4 +1,5 @@
 import { Gender, UserRole } from './enums';
+import type { Subject } from '../subject';
 
 export interface User {
   id: string | number;
@@ -15,4 +16,5 @@ export interface User {
   school?: string | null;
   teachingSubject?: string | null;
   childGrade?: string | null;
+  interestedSubjects?: Subject[] | null;
 }

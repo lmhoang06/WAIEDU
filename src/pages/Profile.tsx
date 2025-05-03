@@ -6,6 +6,8 @@ import '../styles/dashboard.css';
 import '../styles/profile.css';
 import { UserRole, Gender } from '../types/user/enums';
 import { User } from '../types/user';
+import type { Subject } from '../types/subject';
+import { subjectOptions } from '../types/subject';
 
 // Define the API response format
 interface ApiUserResponse {
@@ -26,6 +28,7 @@ interface ApiUserResponse {
     school?: string | null;
     teaching_subject?: string | null;
     child_grade?: string | null;
+    interested_subjects?: string[] | Subject[] | null;
   };
 }
 
@@ -38,18 +41,6 @@ const Profile: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [formData, setFormData] = useState<User | null>(null);
-
-  // Subject options - same as in Register component
-  const subjectOptions = [
-    { id: 'physics', name: 'Vật Lý' },
-    { id: 'chemistry', name: 'Hóa Học' },
-    { id: 'biology', name: 'Sinh Học' },
-    { id: 'math', name: 'Toán Học' },
-    { id: 'literature', name: 'Văn Học' },
-    { id: 'english', name: 'Tiếng Anh' },
-    { id: 'history', name: 'Lịch Sử' },
-    { id: 'geography', name: 'Địa Lý' }
-  ];
 
   // Convert from API snake_case to camelCase format
   const convertApiUserToCamelCase = (apiUser: ApiUserResponse['user']): User => {
@@ -67,7 +58,11 @@ const Profile: React.FC = () => {
       grade: apiUser.grade || null,
       school: apiUser.school || null,
       teachingSubject: apiUser.teaching_subject || null,
-      childGrade: apiUser.child_grade || null
+      childGrade: apiUser.child_grade || null,
+      interestedSubjects: apiUser.interested_subjects ? apiUser.interested_subjects.map((subject: any) => ({
+        id: subject.id,
+        name: subject.name
+      })) : null
     };
   };
 
@@ -86,7 +81,8 @@ const Profile: React.FC = () => {
       grade: user.grade,
       school: user.school,
       teaching_subject: user.teachingSubject,
-      child_grade: user.childGrade
+      child_grade: user.childGrade,
+      interested_subjects: user.interestedSubjects ? user.interestedSubjects.map(subject => subject.id) : []
     };
   };
 
@@ -241,6 +237,22 @@ const Profile: React.FC = () => {
     }
   };
 
+  // Handle subject checkbox changes
+  const handleSubjectChange = (subjectId: string) => {
+    if (!formData || !formData.interestedSubjects) return;
+    const subject = subjectOptions.find(subject => subject.id === subjectId);
+    if (!subject) return;
+    
+    const updatedSubjects = formData.interestedSubjects.includes(subject)
+      ? formData.interestedSubjects.filter(subject => subject.id !== subjectId)
+      : [...formData.interestedSubjects, subject];
+    
+    setFormData({
+      ...formData,
+      interestedSubjects: updatedSubjects
+    });
+  };
+
   // Display proper label for gender
   const getGenderLabel = (gender: string | undefined | null) => {
     switch (gender) {
@@ -257,15 +269,8 @@ const Profile: React.FC = () => {
       case 'student': return 'Học sinh';
       case 'teacher': return 'Giáo viên';
       case 'parent': return 'Phụ huynh';
-      case 'admin': return 'Quản trị viên';
       default: return 'Người dùng';
     }
-  };
-
-  // Get subject name by id
-  const getSubjectName = (id: string) => {
-    const subject = subjectOptions.find(s => s.id === id);
-    return subject ? subject.name : id;
   };
 
   if (loading) {
@@ -467,6 +472,31 @@ const Profile: React.FC = () => {
                     <div className="field-value">{user?.school || 'Chưa cập nhật'}</div>
                   )}
                 </div>
+
+                <div className="profile-field full-width">
+                  <label>Môn học yêu thích</label>
+                  {isEditing ? (
+                    <div className="subject-checkboxes">
+                      {subjectOptions.map(subject => (
+                        <div className="subject-checkbox" key={subject.id}>
+                          <input
+                            type="checkbox"
+                            id={`subject-${subject.id}`}
+                            checked={!!formData?.interestedSubjects?.find(s => s.id === subject.id)}
+                            onChange={() => handleSubjectChange(subject.id)}
+                          />
+                          <label htmlFor={`subject-${subject.id}`}>{subject.name}</label>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="field-value">
+                      {user?.interestedSubjects && user.interestedSubjects.length > 0
+                        ? user.interestedSubjects.map(subject => subject.name).join(', ')
+                        : 'Chưa cập nhật'}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           )}
@@ -494,7 +524,7 @@ const Profile: React.FC = () => {
                   ) : (
                     <div className="field-value">
                       {user?.teachingSubject 
-                        ? getSubjectName(user.teachingSubject) 
+                        ? subjectOptions.find(subject => subject.id === user.teachingSubject)?.name 
                         : 'Chưa cập nhật'}
                     </div>
                   )}
@@ -574,9 +604,9 @@ const Profile: React.FC = () => {
                 <label>Ngày tạo tài khoản</label>
                 <div className="field-value">
                   {user?.createdAt 
-                    ? new Date(user.createdAt).toLocaleDateString('vi-VN', {
-                        day: 'numeric',
-                        month: 'numeric',
+                    ? new Date(user.createdAt + 'Z').toLocaleDateString('vi-VN', {
+                        day: '2-digit',
+                        month: '2-digit',
                         year: 'numeric',
                         hour: '2-digit',
                         minute: '2-digit'
@@ -588,13 +618,13 @@ const Profile: React.FC = () => {
               <div className="profile-field">
                 <label>Cập nhật lần cuối</label>
                 <div className="field-value">
-                  {user?.updatedAt 
-                    ? new Date(user.updatedAt).toLocaleDateString('vi-VN', {
-                        day: 'numeric',
-                        month: 'numeric',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
+                    {user?.updatedAt 
+                    ? new Date(user.updatedAt + 'Z').toLocaleDateString('vi-VN', {
+                      day: '2-digit',
+                      month: '2-digit',
+                      year: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
                       })
                     : 'Không có thông tin'}
                 </div>
