@@ -4,25 +4,8 @@ import DashboardLayout from '../layouts/DashboardLayout';
 import { authService } from '../services/auth';
 import '../styles/dashboard.css';
 import '../styles/profile.css';
-
-// Define the extended user type with additional fields
-interface ProfileUser {
-  id: string | number;
-  name: string;
-  email: string;
-  role?: string;
-  isVerified?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-  phone?: string | null;
-  birthDate?: string | null;
-  gender?: string | null;
-  grade?: string | null;
-  school?: string | null;
-  interestedSubjects?: string[];
-  teachingSubject?: string | null;
-  childGrade?: string | null;
-}
+import { UserRole, Gender } from '../types/user/enums';
+import { User } from '../types/user';
 
 // Define the API response format
 interface ApiUserResponse {
@@ -41,7 +24,6 @@ interface ApiUserResponse {
     gender?: string | null;
     grade?: string | null;
     school?: string | null;
-    interested_subjects?: string[];
     teaching_subject?: string | null;
     child_grade?: string | null;
   };
@@ -54,8 +36,8 @@ const Profile: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [user, setUser] = useState<ProfileUser | null>(null);
-  const [formData, setFormData] = useState<ProfileUser | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [formData, setFormData] = useState<User | null>(null);
 
   // Subject options - same as in Register component
   const subjectOptions = [
@@ -70,37 +52,39 @@ const Profile: React.FC = () => {
   ];
 
   // Convert from API snake_case to camelCase format
-  const convertApiUserToCamelCase = (apiUser: ApiUserResponse['user']): ProfileUser => {
+  const convertApiUserToCamelCase = (apiUser: ApiUserResponse['user']): User => {
     return {
-      id: apiUser.id,
+      id: apiUser.id.toString(),
       name: apiUser.name,
       email: apiUser.email,
-      role: apiUser.role,
-      isVerified: apiUser.is_verified,
-      createdAt: apiUser.created_at,
-      updatedAt: apiUser.updated_at,
+      role: apiUser.role as UserRole,
+      isVerified: apiUser.is_verified || false,
+      createdAt: apiUser.created_at || '',
+      updatedAt: apiUser.updated_at || '',
       phone: apiUser.phone || null,
       birthDate: apiUser.birth_date || null,
-      gender: apiUser.gender || null,
+      gender: apiUser.gender as Gender || null,
       grade: apiUser.grade || null,
       school: apiUser.school || null,
-      interestedSubjects: apiUser.interested_subjects || [],
       teachingSubject: apiUser.teaching_subject || null,
       childGrade: apiUser.child_grade || null
     };
   };
 
-  // Convert from camelCase to API snake_case format
-  const convertUserToApiFormat = (user: ProfileUser): Partial<ApiUserResponse['user']> => {
+  const convertUserToApiFormat = (user: User): Partial<ApiUserResponse['user']> => {
     return {
+      id: parseInt(user.id.toString(), 10),
       name: user.name,
       email: user.email,
+      role: user.role,
+      is_verified: user.isVerified,
+      created_at: user.createdAt,
+      updated_at: user.updatedAt,
       phone: user.phone,
       birth_date: user.birthDate,
       gender: user.gender,
       grade: user.grade,
       school: user.school,
-      interested_subjects: user.interestedSubjects,
       teaching_subject: user.teachingSubject,
       child_grade: user.childGrade
     };
@@ -118,8 +102,8 @@ const Profile: React.FC = () => {
         return;
       }
 
-      setUser(currentUser as ProfileUser);
-      setFormData(currentUser as ProfileUser);
+      setUser(currentUser as User);
+      setFormData(currentUser as User);
       
       try {
         // Get fresh user data from API
@@ -181,20 +165,6 @@ const Profile: React.FC = () => {
     setSuccess(null);
   };
 
-  // Handle subject checkbox changes
-  const handleSubjectChange = (subjectId: string) => {
-    if (!formData || !formData.interestedSubjects) return;
-    
-    const updatedSubjects = formData.interestedSubjects.includes(subjectId)
-      ? formData.interestedSubjects.filter(id => id !== subjectId)
-      : [...formData.interestedSubjects, subjectId];
-    
-    setFormData({
-      ...formData,
-      interestedSubjects: updatedSubjects
-    });
-  };
-
   // Toggle edit mode
   const toggleEditMode = () => {
     if (isEditing) {
@@ -218,7 +188,6 @@ const Profile: React.FC = () => {
       const API_URL = import.meta.env.VITE_API_URL;
       const token = authService.getToken();
       
-      // Convert our user data format to API format (snake_case)
       const apiUserData = convertUserToApiFormat(formData);
       
       const response = await fetch(`${API_URL}/users/${user.id}`, {
@@ -231,12 +200,34 @@ const Profile: React.FC = () => {
       });
       
       const responseData = await response.json();
-      
+      console.log('API Response:', responseData); // Debug response
+
       if (response.ok && responseData.success === 1) {
-        const updatedUser = responseData.user as ProfileUser;
-        setUser(updatedUser);
-        setFormData(updatedUser);
-        localStorage.setItem('user', JSON.stringify(updatedUser));
+        // Verify we have all required fields from API
+        if (!responseData.user || !responseData.user.id || !responseData.user.name || !responseData.user.email) {
+          throw new Error('Invalid user data received from API');
+        }
+
+        // Convert API response to our format
+        const updatedUser = convertApiUserToCamelCase(responseData.user);
+        console.log('Converted user data:', updatedUser); // Debug converted data
+        
+        // Merge with existing user data to ensure no fields are lost
+        const mergedUser = {
+          ...user,
+          ...updatedUser,
+          // Ensure these fields are properly carried over
+          teachingSubject: updatedUser.teachingSubject || user.teachingSubject,
+          childGrade: updatedUser.childGrade || user.childGrade,
+        };
+
+        // Update localStorage with complete data
+        localStorage.setItem('user', JSON.stringify(mergedUser));
+        
+        // Update states with complete data
+        setUser(mergedUser);
+        setFormData(mergedUser);
+        
         setSuccess(responseData.message || 'Thông tin cá nhân đã được cập nhật thành công.');
         setIsEditing(false);
       } else {
@@ -448,8 +439,6 @@ const Profile: React.FC = () => {
                       onChange={handleChange}
                     >
                       <option value="">Chọn lớp</option>
-                      <option value="6">Lớp 6</option>
-                      <option value="7">Lớp 7</option>
                       <option value="8">Lớp 8</option>
                       <option value="9">Lớp 9</option>
                       <option value="10">Lớp 10</option>
@@ -476,31 +465,6 @@ const Profile: React.FC = () => {
                     />
                   ) : (
                     <div className="field-value">{user?.school || 'Chưa cập nhật'}</div>
-                  )}
-                </div>
-                
-                <div className="profile-field full-width">
-                  <label>Môn học yêu thích</label>
-                  {isEditing ? (
-                    <div className="subject-checkboxes">
-                      {subjectOptions.map(subject => (
-                        <div className="subject-checkbox" key={subject.id}>
-                          <input
-                            type="checkbox"
-                            id={`subject-${subject.id}`}
-                            checked={formData?.interestedSubjects?.includes(subject.id) || false}
-                            onChange={() => handleSubjectChange(subject.id)}
-                          />
-                          <label htmlFor={`subject-${subject.id}`}>{subject.name}</label>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="field-value">
-                      {user?.interestedSubjects && user.interestedSubjects.length > 0
-                        ? user.interestedSubjects.map(id => getSubjectName(id)).join(', ')
-                        : 'Chưa cập nhật'}
-                    </div>
                   )}
                 </div>
               </div>
