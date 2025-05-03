@@ -10,6 +10,7 @@ import StudentCourses from './pages/dashboard/StudentCourses';
 import CourseDetails from './pages/dashboard/CourseDetails';
 import TeacherDashboard from './pages/dashboard/TeacherDashboard';
 import ParentDashboard from './pages/dashboard/ParentDashboard';
+import Profile from './pages/Profile';
 import './App.css';
 
 function App() {
@@ -32,6 +33,11 @@ function App() {
         <Route path="/dashboard/student/course/:courseId" element={<CourseDetails />} />
         <Route path="/dashboard/teacher" element={<TeacherDashboard />} />
         <Route path="/dashboard/parent" element={<ParentDashboard />} />
+
+        {/* Profile */}
+        <Route path="/profile" element={<Profile />} />
+        
+        {/* Settings */}
         
         {/* Add more routes here */}
         
