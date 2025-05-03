@@ -21,51 +21,12 @@ type CourseDetails = {
   updated_at: string;
 };
 
-type Module = {
-  id: string;
-  title: string;
-  duration: string;
-  lessons_count: number;
-  completed_count: number;
-  lessons: Lesson[];
-  expanded: boolean;
-};
-
-type Lesson = {
-  id: string;
-  title: string;
-  type: 'video' | 'quiz' | 'reading' | 'experiment';
-  duration: string;
-  completed: boolean;
-};
-
-type ActivityItem = {
-  id: string;
-  title: string;
-  type: string;
-  date: string;
-  duration?: string;
-  score?: number;
-};
-
-type Resource = {
-  id: string;
-  title: string;
-  type: 'document' | 'presentation' | 'spreadsheet' | 'link' | 'video';
-  size?: string;
-  last_updated: string;
-};
-
 const API_URL = import.meta.env.VITE_API_URL;
 
 const CourseDetails: React.FC = () => {
   const { courseId } = useParams<{ courseId: string }>();
-  const [activeTab, setActiveTab] = useState('content');
   
   const [courseDetails, setCourseDetails] = useState<CourseDetails | null>(null);
-  const [modules, setModules] = useState<Module[]>([]);
-  const [activities, setActivities] = useState<ActivityItem[]>([]);
-  const [resources, setResources] = useState<Record<string, Resource[]>>({});
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -118,131 +79,6 @@ const CourseDetails: React.FC = () => {
           updated_at: data.course.updated_at || 'Unknown',
         });
 
-        // If API call was successful but backend isn't implemented yet, use mock data
-        const useMock = true;
-        if (useMock) {
-          const mockModules: Module[] = [
-            {
-              id: '1',
-              title: 'Giới thiệu về Vật lý lượng tử',
-              duration: '4 giờ',
-              lessons_count: 6,
-              completed_count: 6,
-              expanded: false,
-              lessons: [
-                { id: '1.1', title: 'Lịch sử vật lý lượng tử', type: 'video', duration: '45 phút', completed: true },
-                { id: '1.2', title: 'Các nhà khoa học và khám phá quan trọng', type: 'reading', duration: '30 phút', completed: true },
-                { id: '1.3', title: 'Kiểm tra kiến thức: Lịch sử và nhà khoa học', type: 'quiz', duration: '20 phút', completed: true },
-                { id: '1.4', title: 'Nguyên lý bất định Heisenberg', type: 'video', duration: '50 phút', completed: true },
-                { id: '1.5', title: 'Thí nghiệm khe Young', type: 'experiment', duration: '60 phút', completed: true },
-                { id: '1.6', title: 'Kiểm tra cuối chương', type: 'quiz', duration: '35 phút', completed: true }
-              ]
-            },
-            {
-              id: '2',
-              title: 'Hạt và sóng: Tính chất lưỡng tính',
-              duration: '6 giờ',
-              lessons_count: 8,
-              completed_count: 8,
-              expanded: false,
-              lessons: [
-                { id: '2.1', title: 'Tính chất lưỡng tính của ánh sáng', type: 'video', duration: '40 phút', completed: true },
-                { id: '2.2', title: 'Thí nghiệm hiệu ứng quang điện', type: 'experiment', duration: '90 phút', completed: true },
-                { id: '2.3', title: 'Các phương trình lượng tử cơ bản', type: 'reading', duration: '60 phút', completed: true },
-                { id: '2.4', title: 'Bài tập áp dụng', type: 'quiz', duration: '30 phút', completed: true },
-                { id: '2.5', title: 'Hiệu ứng Compton', type: 'video', duration: '45 phút', completed: true },
-                { id: '2.6', title: 'Thí nghiệm hiệu ứng Compton', type: 'experiment', duration: '60 phút', completed: true },
-                { id: '2.7', title: 'Ứng dụng trong công nghệ hiện đại', type: 'reading', duration: '35 phút', completed: true },
-                { id: '2.8', title: 'Kiểm tra cuối chương', type: 'quiz', duration: '40 phút', completed: true }
-              ]
-            },
-            {
-              id: '3',
-              title: 'Nguyên lý chồng chất lượng tử',
-              duration: '5 giờ',
-              lessons_count: 7,
-              completed_count: 5,
-              expanded: false,
-              lessons: [
-                { id: '3.1', title: 'Giới thiệu về nguyên lý chồng chất', type: 'video', duration: '50 phút', completed: true },
-                { id: '3.2', title: 'Thí nghiệm mô phỏng mèo Schrödinger', type: 'experiment', duration: '80 phút', completed: true },
-                { id: '3.3', title: 'Toán học trong nguyên lý chồng chất', type: 'reading', duration: '60 phút', completed: true },
-                { id: '3.4', title: 'Bài tập ứng dụng', type: 'quiz', duration: '30 phút', completed: true },
-                { id: '3.5', title: 'Ứng dụng trong máy tính lượng tử', type: 'video', duration: '45 phút', completed: true },
-                { id: '3.6', title: 'Thảo luận: Giải thích hiện tượng', type: 'reading', duration: '40 phút', completed: false },
-                { id: '3.7', title: 'Kiểm tra cuối chương', type: 'quiz', duration: '35 phút', completed: false }
-              ]
-            },
-            {
-              id: '4',
-              title: 'Các ứng dụng của vật lý lượng tử',
-              duration: '8 giờ',
-              lessons_count: 9,
-              completed_count: 0,
-              expanded: false,
-              lessons: [
-                { id: '4.1', title: 'Giới thiệu tổng quan về ứng dụng', type: 'video', duration: '30 phút', completed: false },
-                { id: '4.2', title: 'Máy tính lượng tử', type: 'video', duration: '60 phút', completed: false },
-                { id: '4.3', title: 'Mô phỏng hoạt động của CPU lượng tử', type: 'experiment', duration: '90 phút', completed: false },
-                { id: '4.4', title: 'Mật mã lượng tử', type: 'reading', duration: '45 phút', completed: false },
-                { id: '4.5', title: 'Thí nghiệm truyền thông tin lượng tử', type: 'experiment', duration: '60 phút', completed: false },
-                { id: '4.6', title: 'Vật liệu lượng tử', type: 'video', duration: '50 phút', completed: false },
-                { id: '4.7', title: 'Y học và vật lý lượng tử', type: 'reading', duration: '40 phút', completed: false },
-                { id: '4.8', title: 'Bài tập tổng hợp', type: 'quiz', duration: '60 phút', completed: false },
-                { id: '4.9', title: 'Kiểm tra cuối khóa', type: 'quiz', duration: '90 phút', completed: false }
-              ]
-            }
-          ];
-
-          const mockActivities: ActivityItem[] = [
-            { id: '1', title: 'Hoàn thành bài kiểm tra Lịch sử và nhà khoa học', type: 'quiz', date: '2025-04-23', score: 92 },
-            { id: '2', title: 'Xem video Nguyên lý bất định Heisenberg', type: 'video', date: '2025-04-22', duration: '50 phút' },
-            { id: '3', title: 'Hoàn thành thí nghiệm khe Young', type: 'experiment', date: '2025-04-20', duration: '58 phút' },
-            { id: '4', title: 'Hoàn thành kiểm tra cuối chương 1', type: 'quiz', date: '2025-04-19', score: 88 },
-            { id: '5', title: 'Xem video Tính chất lưỡng tính của ánh sáng', type: 'video', date: '2025-04-18', duration: '40 phút' }
-          ];
-
-          const mockResources: Record<string, Resource[]> = {
-            'Tài liệu': [
-              { id: '1', title: 'Giáo trình Vật lý lượng tử cơ bản', type: 'document', size: '2.4 MB', last_updated: '2025-01-15' },
-              { id: '2', title: 'Bài tập và đáp án', type: 'document', size: '1.8 MB', last_updated: '2025-02-10' },
-              { id: '3', title: 'Tóm tắt kiến thức trọng tâm', type: 'document', size: '825 KB', last_updated: '2025-03-05' }
-            ],
-            'Bài giảng': [
-              { id: '4', title: 'Thuyết trình: Lịch sử phát triển vật lý lượng tử', type: 'presentation', size: '4.2 MB', last_updated: '2025-01-20' },
-              { id: '5', title: 'Bài giảng: Nguyên lý chồng chất', type: 'presentation', size: '3.6 MB', last_updated: '2025-02-28' }
-            ],
-            'Dữ liệu thí nghiệm': [
-              { id: '6', title: 'Kết quả thí nghiệm khe Young', type: 'spreadsheet', size: '920 KB', last_updated: '2025-03-12' },
-              { id: '7', title: 'Dữ liệu hiệu ứng quang điện', type: 'spreadsheet', size: '1.2 MB', last_updated: '2025-03-18' }
-            ],
-            'Tài liệu tham khảo': [
-              { id: '8', title: 'Khóa học trực tuyến về Vật lý lượng tử - MIT', type: 'link', last_updated: '2025-01-30' },
-              { id: '9', title: 'Video: Giải thích Vật lý lượng tử cho người mới bắt đầu', type: 'video', size: '250 MB', last_updated: '2025-02-05' }
-            ]
-          };
-
-          setModules(mockModules);
-          setActivities(mockActivities);
-          setResources(mockResources);
-        } else {
-          // Process actual API response
-          if (data.course.modules) {
-            setModules(data.course.modules.map((module: any) => ({
-              ...module,
-              expanded: false
-            })));
-          }
-
-          if (data.course.activities) {
-            setActivities(data.course.activities);
-          }
-
-          if (data.course.resources) {
-            setResources(data.course.resources);
-          }
-        }
-
         setLoading(false);
       } catch (err) {
         console.error('Error fetching course details:', err);
@@ -258,14 +94,6 @@ const CourseDetails: React.FC = () => {
       setLoading(false);
     }
   }, [courseId]);
-
-  const toggleModule = (moduleId: string) => {
-    setModules(modules.map(module => 
-      module.id === moduleId 
-        ? { ...module, expanded: !module.expanded } 
-        : module
-    ));
-  };
 
   const renderRatingStars = (rating: number) => {
     const stars = [];
@@ -283,38 +111,6 @@ const CourseDetails: React.FC = () => {
     }
     
     return stars;
-  };
-
-  const renderLessonIcon = (type: string) => {
-    switch (type) {
-      case 'video':
-        return <span className="lesson-type-icon">🎬</span>;
-      case 'quiz':
-        return <span className="lesson-type-icon">📝</span>;
-      case 'reading':
-        return <span className="lesson-type-icon">📚</span>;
-      case 'experiment':
-        return <span className="lesson-type-icon">🧪</span>;
-      default:
-        return <span className="lesson-type-icon">📄</span>;
-    }
-  };
-
-  const renderResourceIcon = (type: string) => {
-    switch (type) {
-      case 'document':
-        return <span className="document">📄</span>;
-      case 'presentation':
-        return <span className="presentation">📊</span>;
-      case 'spreadsheet':
-        return <span className="spreadsheet">📈</span>;
-      case 'link':
-        return <span className="link">🔗</span>;
-      case 'video':
-        return <span className="video">🎬</span>;
-      default:
-        return <span className="document">📄</span>;
-    }
   };
 
   const getInitials = (name: string) => {
